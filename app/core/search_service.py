@@ -79,11 +79,12 @@ async def buscar_produto(query: str, cep: str) -> List[Oferta]:
     # 7. Regra Final: Trava de Margem Competitiva (15%)
     # Se a diferença entre a 1ª e a 2ª oferta for > 15%, o PREÇO ABSOLUTO deve mandar.
     # Se houver uma oferta MUITO mais barata em qualquer lugar da lista, ela SOBE.
-    menor_pelo_preco = min(confiaveis, key=lambda x: x.total_real)
-    if confiaveis[0].total_real > (menor_pelo_preco.total_real * 1.15):
-        # Remove de onde estiver e coloca no topo
-        confiaveis.remove(menor_pelo_preco)
-        confiaveis.insert(0, menor_pelo_preco)
+    if confiaveis:
+        menor_pelo_preco = min(confiaveis, key=lambda x: x.total_real)
+        if confiaveis[0].total_real > (menor_pelo_preco.total_real * 1.15):
+            # Remove de onde estiver e coloca no topo
+            confiaveis.remove(menor_pelo_preco)
+            confiaveis.insert(0, menor_pelo_preco)
 
     # 8. Selecionar Top 3 FINAL (Garantindo que a lista está curta)
     final_top_3 = confiaveis[:3]
