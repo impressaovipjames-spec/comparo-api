@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 class ApiService {
   // Em Produção: https://api.comparo.app
   // Em Desenvolvimento: http://localhost:8000
-  static const String baseUrl = "https://comparo-api.onrender.com";
+  static const String baseUrl = "https://comparo-api-y1r8.onrender.com";
 
   Future<Map<String, dynamic>> buscarProduto(String query, String cep) async {
     final url = Uri.parse('$baseUrl/buscar');

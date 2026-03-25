@@ -5,14 +5,15 @@ from ..models.oferta import Oferta
 
 class MercadoLivreAdapter(BaseAdapter):
     async def buscar(self, query: str, cep: str) -> List[Oferta]:
-        url = f"https://api.mercadolibre.com/sites/MLB/search?q={query}"
+        # sort=price_asc garante que as APIs tragam os mais baratos primeiro
+        url = f"https://api.mercadolibre.com/sites/MLB/search?q={query}&sort=price_asc&limit=50"
         async with httpx.AsyncClient() as client:
             response = await client.get(url)
             if response.status_code != 200:
                 return []
             
             data = response.json()
-            items = data.get("results", [])[:5]  # Pega as primeiras 5
+            items = data.get("results", [])
             
             ofertas = []
             for item in items:

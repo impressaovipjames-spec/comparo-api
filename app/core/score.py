@@ -1,34 +1,38 @@
 from .models.oferta import Oferta
 
 class CalculadoraScore:
+    BONUS_MAX_PCT = 0.08  # Máximo de 8% de bônus sobre o preço
+
     @staticmethod
     def calcular(oferta: Oferta) -> Oferta:
-        # 1. Custo Direto
         total_real = oferta.preco_produto + oferta.frete
         oferta.total_real = total_real
         
-        # Base do score é o total real
+        # O score inicial é o próprio preço. Bônus diminuem o score (quanto menor, melhor).
         score = total_real
         
-        # 2. Ajustes (Bônus diminuem o score, Penalidades aumentam)
+        # Cálculo de Bônus (Até o limite de 8%)
+        total_bonus_pct = 0.0
         
-        # Entrega rápida (<= 3 dias) -> Bônus de 10%
         if oferta.prazo_dias <= 3:
-            score *= 0.90
+            total_bonus_pct += 0.03  # 3% por agilidade
             
-        # Reputação Alta (>= 4.8) -> Bônus de 5%
         if oferta.reputacao >= 4.8:
-            score *= 0.95
+            total_bonus_pct += 0.03  # 3% por confiança
             
-        # Frete Grátis -> Bônus de 5%
         if oferta.frete == 0:
-            score *= 0.95
+            total_bonus_pct += 0.02  # 2% por frete grátis
             
-        # Prazo Longo (> 10 dias) -> Penalidade de 15%
+        # Garantir que não ultrapassa o teto de 8%
+        total_bonus_pct = min(total_bonus_pct, CalculadoraScore.BONUS_MAX_PCT)
+        
+        # Aplicar bônus
+        score = score * (1 - total_bonus_pct)
+            
+        # Penalidades ainda existem para afastar ofertas ruins
         if oferta.prazo_dias > 10:
             score *= 1.15
             
-        # Reputação Baixa (< 4.0) -> Penalidade de 10%
         if oferta.reputacao < 4.0:
             score *= 1.10
             
