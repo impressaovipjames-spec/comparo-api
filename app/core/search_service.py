@@ -76,19 +76,19 @@ async def buscar_produto(query: str, cep: str) -> List[Oferta]:
     # 6. ORDENAR PELO SCORE (Quanto menor o score_final, melhor a oferta)
     confiaveis.sort(key=lambda x: x.score_final)
     
-    # 7. Regra Final: Garantir que o menor preço absoluto não seja ignorado
-    # Se a oferta no Top 1 for > 15% mais cara que o menor preço absoluto da lista, 
-    # forçamos o menor preço de volta ao topo.
-    menor_preco_absoluto = min(confiaveis, key=lambda x: x.total_real)
-    if confiaveis[0].total_real > (menor_preco_absoluto.total_real * 1.15):
-        # Move o menor preço para o topo se ele foi "vencido" injustamente por bônus
-        confiaveis.remove(menor_preco_absoluto)
-        confiaveis.insert(0, menor_preco_absoluto)
+    # 7. Regra Final: Trava de Margem Competitiva (15%)
+    # Se a diferença entre a 1ª e a 2ª oferta for > 15%, o PREÇO ABSOLUTO deve mandar.
+    # Se houver uma oferta MUITO mais barata em qualquer lugar da lista, ela SOBE.
+    menor_pelo_preco = min(confiaveis, key=lambda x: x.total_real)
+    if confiaveis[0].total_real > (menor_pelo_preco.total_real * 1.15):
+        # Remove de onde estiver e coloca no topo
+        confiaveis.remove(menor_pelo_preco)
+        confiaveis.insert(0, menor_pelo_preco)
 
-    # Selecionar Top 3
+    # 8. Selecionar Top 3 FINAL (Garantindo que a lista está curta)
     final_top_3 = confiaveis[:3]
     
-    # 8. Salvar no Cache
+    # 9. Salvar no Cache
     json_results = json.dumps([r.model_dump() for r in final_top_3])
     setex(cache_key, json_results, ttl=600)
     
