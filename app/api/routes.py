@@ -5,14 +5,14 @@ import json
 import os
 from datetime import datetime, timedelta
 
-from app.core.supabase_client import get_supabase
-from app.core.cache import get_cache
-from app.core.models.busca import BuscaRequest
-from app.core.models.oferta import Oferta
-from app.core.models.alerta import AlertaCreate, AlertaRead
-from app.core.search_service import buscar_produto
-from app.core.alert_service import AlertService
-from app.core.notification_service import NotificationService
+from core.supabase_client import get_supabase
+from core.cache import get_cache
+from core.models.busca import BuscaRequest
+from core.models.oferta import Oferta
+from core.models.alerta import AlertaCreate, AlertaRead
+from core.search_service import buscar_produto
+from core.alert_service import AlertService
+from core.notification_service import NotificationService
 
 router = APIRouter()
 
