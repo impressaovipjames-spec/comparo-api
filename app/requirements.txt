@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+python-dotenv
+supabase
+redis
+httpx
+pydantic
+firebase-admin

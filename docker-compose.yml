@@ -1,0 +1,38 @@
+services:
+  api:
+    build: ./backend
+    container_name: comparo_api
+    restart: always
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./backend/.env.production
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:alpine
+    container_name: comparo_redis
+    restart: always
+    ports:
+      - "6379:6379"
+
+  worker_alerts:
+    build: ./backend
+    container_name: comparo_worker_alerts
+    restart: always
+    command: python workers/alert_worker.py
+    env_file:
+      - ./backend/.env.production
+    depends_on:
+      - api
+
+  worker_price_collector:
+    build: ./backend
+    container_name: comparo_worker_collector
+    restart: always
+    command: python workers/price_collector.py
+    env_file:
+      - ./backend/.env.production
+    depends_on:
+      - api
