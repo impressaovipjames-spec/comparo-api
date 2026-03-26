@@ -43,10 +43,22 @@ async def buscar_produto(query: str, cep: str) -> List[Oferta]:
     
     all_results = []
     for r in repositorios_resultados:
+        if isinstance(r, Exception):
+            print("ERRO ADAPTER NO GATHER:", str(r))
+            continue
         if isinstance(r, list):
             all_results.extend(r)
+            
+    print("\n==== DEBUG BUSCA ====")
+    print("QUERY:", query)
+    print("CEP:", cep)
+    print("ADAPTERS ATIVOS:", [type(a).__name__ for a in adapters])
+    print("STATUS DAS TASKS GATHER:", ["OK" if isinstance(r, list) else "FALHA" for r in repositorios_resultados])
+    print("TOTAL OFERTAS MISTURADAS:", len(all_results))
+    print("=====================\n")
     
     if not all_results:
+        print("⚠ Nenhuma oferta real encontrada - retornando vazio com segurança!")
         return []
 
     # 3. FILTRAR RELEVÂNCIA (Garantir o produto exato)
