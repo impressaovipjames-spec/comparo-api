@@ -23,12 +23,20 @@ async def buscar_produto(query: str, cep: str) -> List[Oferta]:
         return [Oferta(**item) for item in data]
     
     # 2. Consultar Adapters em Paralelo (ML traz 50 resultados agora)
+    from ..config import ENABLE_FAKE_ADAPTERS
+    
     adapters = [
-        MercadoLivreAdapter(),
-        AmazonAdapter(),
-        MagaluAdapter(),
-        ShopeeAdapter()
+        MercadoLivreAdapter()
     ]
+    
+    if ENABLE_FAKE_ADAPTERS:
+        adapters.extend([
+            AmazonAdapter(),
+            MagaluAdapter(),
+            ShopeeAdapter()
+        ])
+    
+    print("ADAPTERS ATIVOS:", [type(a).__name__ for a in adapters])
     
     tasks = [adapter.buscar(query, cep) for adapter in adapters]
     repositorios_resultados = await asyncio.gather(*tasks, return_exceptions=True)
