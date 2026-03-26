@@ -5,7 +5,7 @@ import ssl
 from typing import List
 from .base_adapter import BaseAdapter
 from ..models.oferta import Oferta
-from app.core import cache
+from .. import cache
 
 # Chaves estáticas e iniciais geradas pelo sistema de Auth
 ML_APP_ID = "6744427811164510"
