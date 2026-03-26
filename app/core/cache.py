@@ -25,3 +25,10 @@ def setex(key, value, ttl=600):
         return True
     except Exception:
         return False
+
+def set_key(key, value):
+    try:
+        get_cache().set(key, value)
+        return True
+    except Exception:
+        return False
