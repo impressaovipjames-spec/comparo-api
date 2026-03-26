@@ -58,7 +58,7 @@ async def buscar_produto(query: str, cep: str) -> List[Oferta]:
     print("=====================\n")
     
     if not all_results:
-        print("⚠ Nenhuma oferta real encontrada - retornando vazio com segurança!")
+        print("[ALERTA] Nenhuma oferta real encontrada - retornando vazio com seguranca!")
         return []
 
     # 3. FILTRAR RELEVÂNCIA (Garantir o produto exato)

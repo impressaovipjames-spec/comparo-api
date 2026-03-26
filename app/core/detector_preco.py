@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional
-from core.supabase_client import get_supabase
+from .supabase_client import get_supabase
 
 class DetectorPreco:
     @staticmethod
