@@ -23,7 +23,8 @@ async def buscar_produto(query: str, cep: str) -> List[Oferta]:
         return [Oferta(**item) for item in data]
     
     # 2. Consultar Adapters em Paralelo (ML traz 50 resultados agora)
-    from ..config import ENABLE_FAKE_ADAPTERS
+    import os
+    ENABLE_FAKE_ADAPTERS = os.environ.get("ENABLE_FAKE_ADAPTERS", "False").lower() == "true"
     
     adapters = [
         MercadoLivreAdapter()
